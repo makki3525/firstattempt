@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      transition: background 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 50px;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      width: 300px;
+      position: relative;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #yes-btn {
+      background: #4caf50;
+    }
+
+    #no-btn {
+      background: #ff1744;
+      position: absolute;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 16px;
+      color: #fff;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .celebration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: floatUp 5s infinite;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="question">Will you make me the happiest person ever?</h1>
+  <div class="button-container">
+    <button id="yes-btn">Yes</button>
+    <button id="no-btn">No</button>
+  </div>
+  <footer>Made with ❤️ by Muhammad Makki</footer>
+
+  <div class="celebration"></div>
+
+  <script>
+    const body = document.body;
+    const questionEl = document.getElementById("question");
+    const yesBtn = document.getElementById("yes-btn");
+    const noBtn = document.getElementById("no-btn");
+    const celebration = document.querySelector(".celebration");
+
+    const questions = [
+      "Will you make me the happiest person ever?",
+      "Do you promise to stand by my side forever?",
+      "Can we make unforgettable memories together?",
+      "Will you be my partner in every adventure?",
+      "Will you love me unconditionally forever?",
+    ];
+
+    const gradients = [
+      "linear-gradient(to right, #ff9a9e, #fad0c4)",
+      "linear-gradient(to right, #a18cd1, #fbc2eb)",
+      "linear-gradient(to right, #ffecd2, #fcb69f)",
+      "linear-gradient(to right, #a1c4fd, #c2e9fb)",
+      "linear-gradient(to right, #ff8177, #ff867a, #ff8c7f, #f99185, #cf556c, #b12a5b)",
+    ];
+
+    let currentQuestion = 0;
+    let noClickCount = 0;
+
+    // Move the "No" button to random positions
+    function moveNoButton() {
+      const buttonWidth = noBtn.offsetWidth;
+      const buttonHeight = noBtn.offsetHeight;
+      const containerWidth = window.innerWidth;
+      const containerHeight = window.innerHeight;
+
+      let x, y;
+
+      do {
+        x = Math.random() * (containerWidth - buttonWidth);
+        y = Math.random() * (containerHeight - buttonHeight);
+      } while (
+        x < 50 || // Ensure it doesn't move too far left
+        y < 50 || // Ensure it doesn't move too far up
+        x > containerWidth - buttonWidth - 50 || // Avoid going off-screen (right)
+        y > containerHeight - buttonHeight - 50 // Avoid going off-screen (bottom)
+      );
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    // Reset the "No" button's position
+    function resetNoButton() {
+      noBtn.style.left = "auto";
+      noBtn.style.top = "auto";
+      noBtn.style.position = "relative";
+      noBtn.style.display = "inline-block";
+    }
+
+    // Handle the "Yes" button click
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        questionEl.textContent = questions[currentQuestion];
+        body.style.background = gradients[currentQuestion];
+        resetNoButton();
+        noClickCount = 0;
+      } else {
+        celebrate();
+      }
+    }
+
+    // Celebration animation
+    function celebrate() {
+      questionEl.textContent = "You said YES! ❤️ I am the happiest person ever!";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+      body.style.background = gradients[4];
+
+      for (let i = 0; i < 50; i++) {
+        const circle = document.createElement("div");
+        circle.classList.add("circle");
+        circle.style.width = `${Math.random() * 50 + 20}px`;
+        circle.style.height = `${Math.random() * 50 + 20}px`;
+        circle.style.left = `${Math.random() * 100}%`;
+        circle.style.animationDelay = `${Math.random() * 3}s`;
+        circle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.7)`;
+        celebration.appendChild(circle);
+      }
+    }
+
+    // Attach event listeners
+    yesBtn.addEventListener("click", nextQuestion);
+
+    noBtn.addEventListener("click", () => {
+      noClickCount++;
+      if (noClickCount < 5) {
+        moveNoButton();
+      } else {
+        noBtn.style.display = "none";
+      }
+    });
+
+    // Initialize
+    resetNoButton();
+  </script>
+</body>
+  </html>
